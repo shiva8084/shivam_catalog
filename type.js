@@ -1,11 +1,9 @@
 const fs = require("fs");
 
-// Function to decode y-values based on their base
 function decodeYValue(value, base) {
   return parseInt(value, base);
 }
 
-// Function to perform Lagrange interpolation and find the constant term
 function lagrangeInterpolation(points) {
   let k = points.length;
   let constantTerm = 0;
@@ -28,15 +26,11 @@ function lagrangeInterpolation(points) {
   return constantTerm;
 }
 
-// Main function to read input, decode values, and find the constant term
 function findConstantTerm(jsonData) {
   const points = [];
-
-  // Extract the number of roots and k
   const n = jsonData.keys.n;
   const k = jsonData.keys.k;
 
-  // Parse each root and decode the y-values
   for (let key in jsonData) {
     if (key !== "keys") {
       let x = parseInt(key);
@@ -47,22 +41,25 @@ function findConstantTerm(jsonData) {
     }
   }
 
-  // Sort the points by x-value (not strictly necessary but can help with debugging)
   points.sort((a, b) => a.x - b.x);
 
-  // Use Lagrange interpolation to solve for the constant term (c)
   let constantTerm = lagrangeInterpolation(points.slice(0, k));
   return constantTerm;
 }
 
 // Read the input JSON file
-fs.readFile("input.json", "utf8", (err, data) => {
-  if (err) {
-    console.error(err);
-    return;
-  }
+const run = (file) => {
+  fs.readFile(file, "utf8", (err, data) => {
+    if (err) {
+      console.error(err);
+      return;
+    }
 
-  const jsonData = JSON.parse(data);
-  const constantTerm = findConstantTerm(jsonData);
-  console.log("The constant term (c) is:", constantTerm);
-});
+    const jsonData = JSON.parse(data);
+    const constantTerm = findConstantTerm(jsonData);
+    console.log("The constant term (c) is:", constantTerm);
+  });
+};
+
+run("input.json");
+run("input2.json");
